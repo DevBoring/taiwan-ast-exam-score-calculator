@@ -23,7 +23,7 @@ To the calculator: https://devboring.github.io/taiwan-ast-exam-score-calculator/
 
 `data.json`：就是database
 
-`index.html`：讀取`data.json`與建構整個網頁
+`index.html`：讀取`data.json`並建構整個網頁
 
 # 資料來源：大考中心
 
