@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>分科測驗目標分數落點統計工具</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 p-8">
+    <div class="max-w-5xl mx-auto bg-white p-6 rounded-xl shadow-md">
+        <h1 class="text-2xl font-bold text-blue-900 mb-6 text-center">🎓 歷年分科測驗目標分數計算器</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 bg-blue-50 p-4 rounded-lg">
+            <div>
+                <label class="block text-sm font-semibold">已知英文分數：</label>
+                <input type="number" id="score-eng" value="49" class="w-full p-2 border rounded mt-1">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold">已知國文分數：</label>
+                <input type="number" id="score-chi" value="0" class="w-full p-2 border rounded mt-1">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold">輸入校系代碼 (逗號隔開)：</label>
+                <input type="text" id="school-codes" value="0013, 0023" class="w-full p-2 border rounded mt-1">
+            </div>
+        </div>
+        <button onclick="generateTable()" class="w-full bg-blue-700 text-white font-bold py-2 rounded mb-6 hover:bg-blue-800">開始計算</button>
+
+        <table class="w-full border-collapse border" id="result-table">
+            <thead>
+                <tr class="bg-blue-900 text-white text-sm">
+                    <th class="p-3 border text-left">校系 (代碼)</th>
+                    <th class="p-3 border">年度</th>
+                    <th class="p-3 border">最低錄取</th>
+                    <th class="p-3 border">扣除已知後所需總分</th>
+                    <th class="p-3 border bg-orange-600">剩餘單科平均所需</th>
+                    <th class="p-3 border text-left">同分參酌 / 備註</th>
+                </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+        </table>
+    </div>
+
+    <script>
+        let database = {};
+
+        // 網頁開啟時，自動讀取你剛剛用 Python 生出來的 data.json
+        // ⚠️ 注意：直接雙擊兩下打開 HTML 會因為瀏覽器安全限制無法讀取 JSON，本地測試請看下方說明。
+        fetch('data.json')
+            .then(res => res.json())
+            .then(data => {
+                database = data;
+                console.log("資料庫載入成功！", database);
+            });
+
+        function generateTable() {
+            const knownScores = {
+                "英": parseFloat(document.getElementById('score-eng').value) || 0,
+                "國": parseFloat(document.getElementById('score-chi').value) || 0
+            };
+            const codes = document.getElementById('school-codes').value.split(/[\s,]+/).map(c => c.trim());
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+
+            codes.forEach(code => {
+                if (database[code]) {
+                    const school = database[code];
+                    const years = Object.keys(school.history).sort((a,b) => b - a);
+
+                    years.forEach((year, index) => {
+                        const info = school.history[year];
+                        let knownSubjectScore = 0;
+                        let remainingWeight = 0;
+
+                        for (let sub in info.weights) {
+                            let weight = info.weights[sub];
+                            if (knownScores[sub] !== undefined && knownScores[sub] > 0) {
+                                knownSubjectScore += knownScores[sub] * weight;
+                            } else {
+                                remainingWeight += weight;
+                            }
+                        }
+
+                        const scoreAfterDeduction = info.min_score - knownSubjectScore;
+                        const singleSubjectAverage = remainingWeight > 0 ? (scoreAfterDeduction / remainingWeight) : 0;
+
+                        const tr = document.createElement('tr');
+                        tr.className = "text-center border-b";
+
+                        if (index === 0) {
+                            tr.innerHTML = `<td class="p-3 border text-left font-bold" rowspan="${years.length}">[${code}] ${school.name}</td>`;
+                        }
+
+                        tr.innerHTML += `
+                            <td class="p-3 border">${year}</td>
+                            <td class="p-3 border font-mono">${info.min_score.toFixed(2)}</td>
+                            <td class="p-3 border font-mono">${scoreAfterDeduction.toFixed(2)}</td>
+                            <td class="p-3 border font-bold text-orange-700 bg-orange-50 font-mono">${singleSubjectAverage.toFixed(2)}</td>
+                            <td class="p-3 border text-left text-gray-500">${info.filter}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>
