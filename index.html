@@ -81,7 +81,7 @@
     <script>
         let database = {};
 
-        // 1. 從後端載入資料庫（加上時間戳記防瀏覽器快取）
+        // 1. 載入資料庫（加上時間戳記防快取）
         fetch('data.json?v=' + new Date().getTime())
             .then(res => {
                 if (!res.ok) throw new Error("無法載入 data.json，請確認檔案是否存在。");
@@ -96,24 +96,23 @@
                 alert("資料庫載入失敗，請檢查控制台錯誤訊息。");
             });
 
-        // 2. 綁定按鈕與鍵盤 Enter 鍵事件
+        // 2. 綁定按鈕與鍵盤 Enter 鍵
         document.getElementById('search-btn').addEventListener('click', doSearch);
         document.getElementById('search-input').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') doSearch();
         });
 
-        // 3. 核心查詢與計算演算法
+        // 3. 查詢與計算演算法
         function doSearch() {
             const rawInput = document.getElementById('search-input').value.trim();
             const tbody = document.getElementById('result-tbody');
-            tbody.innerHTML = ''; // 先清空舊有的表格內容
+            tbody.innerHTML = ''; // 空舊有的表格內容
 
             if (!rawInput) {
                 tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-red-500 bg-gray-50">請輸入關鍵字再進行查詢！</td></tr>';
                 return;
             }
 
-            // 【升級核心】：使用正則表達式，把半形逗號、全形逗號、空格通通當成分隔符號，切成多個關鍵字陣列
             const keywords = rawInput.split(/[\s,，]+/).map(k => k.trim().toLowerCase()).filter(k => k !== "");
 
             // 抓取使用者填寫的學測已知考科分數
@@ -132,13 +131,11 @@
             for (const [code, deptInfo] of Object.entries(database)) {
                 const deptName = deptInfo.name.toLowerCase();
                 
-                // 檢查這個校系有沒有命中任何一個輸入的關鍵字
                 const isMatch = keywords.some(keyword => code === keyword || deptName.includes(keyword));
                 
                 if (isMatch) {
                     matchCount++;
                     
-                    // 將該校系的歷年資料由新到舊排序
                     const sortedYears = Object.keys(deptInfo.history).sort((a, b) => b.localeCompare(a));
 
                     sortedYears.forEach((year, index) => {
@@ -146,8 +143,6 @@
                         
                         let knownSubjectScore = 0;   
                         let unknownWeightsSum = 0;  
-
-                        // 遍歷該年此校系採計的每一科與權重
                         for (const [subject, weight] of Object.entries(info.weights)) {
                             if (userScores.hasOwnProperty(subject) && userScores[subject] > 0) {
                                 knownSubjectScore += userScores[subject] * weight;
@@ -190,7 +185,6 @@
                 }
             }
 
-            // 如果什麼都沒搜到
             if (matchCount === 0) {
                 tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-gray-400 bg-gray-50">找不到符合的校系，請換個關鍵字試試看！</td></tr>';
             }
