@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分科測驗目標分數落點計算器</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-100 min-h-screen py-8 px-4 font-sans text-gray-800">
+
+    <div class="max-w-5xl mx-auto bg-white rounded-xl shadow-lg p-6">
+        <h1 class="text-3xl font-bold text-center text-blue-900 mb-6">🎯 分科測驗目標分數落點計算器</h1>
+        
+        <div class="bg-blue-50 p-4 rounded-lg mb-6">
+            <h2 class="text-lg font-semibold text-blue-800 mb-3">📋 第一步：輸入你已知的考科分數（1-60級分）</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">國文 (學測)</label>
+                    <input type="number" id="score-國" min="1" max="60" placeholder="未考可留空" class="mt-1 block w-full p-2 border border-gray-300 rounded bg-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">英文 (學測)</label>
+                    <input type="number" id="score-英" min="1" max="60" placeholder="未考可留空" class="mt-1 block w-full p-2 border border-gray-300 rounded bg-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">數A (學測)</label>
+                    <input type="number" id="score-數A" min="1" max="60" placeholder="未考可留空" class="mt-1 block w-full p-2 border border-gray-300 rounded bg-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">數B (學測)</label>
+                    <input type="number" id="score-數B" min="1" max="60" placeholder="未考可留空" class="mt-1 block w-full p-2 border border-gray-300 rounded bg-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">社會 (學測)</label>
+                    <input type="number" id="score-社" min="1" max="60" placeholder="未考可留空" class="mt-1 block w-full p-2 border border-gray-300 rounded bg-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">自然 (學測)</label>
+                    <input type="number" id="score-自" min="1" max="60" placeholder="未考可留空" class="mt-1 block w-full p-2 border border-gray-300 rounded bg-white">
+                </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-2">※ 註：分科測驗科目（如數甲、物、化、生、歷、地、公）因目前未知分數，系統會自動在下方為你計算出它們「平均需要考幾級分」。</p>
+        </div>
+
+        <div class="mb-6 flex flex-col sm:flex-row gap-4 items-end">
+            <div class="flex-1 w-full">
+                <label class="block text-sm font-medium text-gray-700 mb-1">🔍 輸入校系代碼或關鍵字（例如: 0013 或 臺灣大學）</label>
+                <input type="text" id="search-input" placeholder="請輸入..." class="w-full p-3 border border-gray-300 rounded shadow-sm bg-white text-lg">
+            </div>
+            <button id="search-btn" class="w-full sm:w-auto bg-blue-900 hover:bg-blue-800 text-white font-semibold px-6 py-3 rounded shadow transition">
+                開始查詢
+            </button>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse border border-gray-200 shadow-sm rounded-lg overflow-hidden">
+                <thead>
+                    <tr class="bg-blue-900 text-white text-sm">
+                        <th class="p-3 border text-left min-w-[200px]">校系 (代碼)</th>
+                        <th class="p-3 border">年度</th>
+                        <th class="p-3 border">最低錄取</th>
+                        <th class="p-3 border text-left">官方採計與加權</th>
+                        <th class="p-3 border">扣除已知後所需總分</th>
+                        <th class="p-3 border bg-orange-600">剩餘單科平均所需</th>
+                        <th class="p-3 border text-left">同分參酌 / 備註</th>
+                    </tr>
+                </thead>
+                <tbody id="result-tbody" class="text-center text-sm divide-y divide-gray-200">
+                    <tr>
+                        <td colspan="7" class="p-8 text-gray-400 bg-gray-50">請在上方輸入關鍵字並點擊查詢</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let database = {};
+
+        // 1. 從後端載入資料庫（加上時間戳記防瀏覽器快取）
+        fetch('data.json?v=' + new Date().getTime())
+            .then(res => {
+                if (!res.ok) throw new Error("無法載入 data.json，請確認檔案是否存在。");
+                return res.json();
+            })
+            .then(data => {
+                database = data;
+                console.log("🎉 資料庫成功載入！校系總數：", Object.keys(database).length);
+            })
+            .catch(err => {
+                console.error(err);
+                alert("資料庫載入失敗，請檢查控制台錯誤訊息。");
+            });
+
+        // 2. 綁定按鈕與鍵盤 Enter 鍵事件
+        document.getElementById('search-btn').addEventListener('click', doSearch);
+        document.getElementById('search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') doSearch();
+        });
+
+        // 3. 核心查詢與計算演算法
+        function doSearch() {
+            const keyword = document.getElementById('search-input').value.trim().toLowerCase();
+            const tbody = document.getElementById('result-tbody');
+            tbody.innerHTML = ''; // 先清空舊有的表格內容
+
+            if (!keyword) {
+                tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-red-500 bg-gray-50">請輸入關鍵字再進行查詢！</td></tr>';
+                return;
+            }
+
+            // 抓取使用者填寫的學測已知考科分數
+            const userScores = {
+                "國": parseFloat(document.getElementById('score-國').value) || 0,
+                "英": parseFloat(document.getElementById('score-英').value) || 0,
+                "數A": parseFloat(document.getElementById('score-數A').value) || 0,
+                "數B": parseFloat(document.getElementById('score-數B').value) || 0,
+                "社": parseFloat(document.getElementById('score-社').value) || 0,
+                "自": parseFloat(document.getElementById('score-自').value) || 0
+            };
+
+            let matchCount = 0;
+
+            // 巡覽資料庫所有校系
+            for (const [code, deptInfo] of Object.entries(database)) {
+                const deptName = deptInfo.name.toLowerCase();
+                
+                // 支援校系代碼精準比對，或者學校/系所名稱的模糊搜尋
+                if (code === keyword || deptName.includes(keyword)) {
+                    matchCount++;
+                    
+                    // 將該校系的歷年資料由新到舊排序（例如：2025 -> 2024 -> 2023 ...）
+                    const sortedYears = Object.keys(deptInfo.history).sort((a, b) => b.localeCompare(a));
+
+                    sortedYears.forEach((year, index) => {
+                        const info = deptInfo.history[year];
+                        
+                        let knownSubjectScore = 0;   // 已知科目的加權總分
+                        let unknownWeightsSum = 0;  // 未知（未考）科目的權重總和
+
+                        // 遍歷該年此校系採計的每一科與權重
+                        for (const [subject, weight] of Object.entries(info.weights)) {
+                            if (userScores.hasOwnProperty(subject) && userScores[subject] > 0) {
+                                // 如果使用者有填寫該科分數，算入「已知加權總分」
+                                knownSubjectScore += userScores[subject] * weight;
+                            } else {
+                                // 如果使用者沒填（如分科測驗考科），則收集該科權重
+                                unknownWeightsSum += weight;
+                            }
+                        }
+
+                        // 計算扣除已知學測科目後，其餘科目還需要拿幾分
+                        let scoreAfterDeduction = info.min_score - knownSubjectScore;
+                        if (scoreAfterDeduction < 0) scoreAfterDeduction = 0;
+
+                        // 計算其餘未考科目，平均每科要考到幾級分（除以剩餘總權重）
+                        let singleSubjectAverage = 0;
+                        if (unknownWeightsSum > 0) {
+                            singleSubjectAverage = scoreAfterDeduction / unknownWeightsSum;
+                        }
+
+                        // 開始建立 HTML 表格列 (Row)
+                        const tr = document.createElement('tr');
+                        tr.className = index % 2 === 0 ? 'bg-white hover:bg-gray-50' : 'bg-gray-50 hover:bg-gray-100';
+
+                        // 實現「大標包小標」：只有最上方第一行顯示校系名稱（合併儲存格），畫面極致簡潔
+                        if (index === 0) {
+                            const tdName = document.createElement('td');
+                            tdName.className = "p-3 border text-left font-semibold text-blue-900 bg-white";
+                            tdName.rowSpan = sortedYears.length;
+                            tdName.innerHTML = `${deptInfo.name} <br><span class="text-xs text-gray-400 font-mono">#${code}</span>`;
+                            tr.appendChild(tdName);
+                        }
+
+                        // 填入同一個校系其餘年份的橫向數據欄位
+                        tr.innerHTML += `
+                            <td class="p-3 border">${year}年</td>
+                            <td class="p-3 border font-mono text-gray-600">${info.min_score.toFixed(2)}</td>
+                            <td class="p-3 border text-left text-xs font-mono text-gray-600 max-w-xs truncate" title="${info.full_formula}">${info.full_formula}</td>
+                            <td class="p-3 border font-mono ${scoreAfterDeduction > 0 ? 'text-blue-700' : 'text-green-600 font-bold'}">${scoreAfterDeduction.toFixed(2)}</td>
+                            <td class="p-3 border font-bold text-orange-700 bg-orange-50 font-mono">
+                                ${singleSubjectAverage > 60 ? '⚠️ 超出滿分' : singleSubjectAverage.toFixed(2) + ' 級'}
+                            </td>
+                            <td class="p-3 border text-left text-xs text-gray-500 max-w-xs truncate" title="${info.filter}">${info.filter}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            }
+
+            // 如果什麼都沒搜到
+            if (matchCount === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-gray-400 bg-gray-50">找不到符合的校系，請換個關鍵字試試看！</td></tr>';
+            }
+        }
+    </script>
+</body>
+</html>
