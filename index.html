@@ -74,7 +74,7 @@
         </div>
 
         <div class="mt-8 text-center text-sm text-gray-400">
-            to source: <a href="https://github.com/DevBoring/taiwan-ast-exam-score-calculator" target="_blank" class="text-blue-500 hover:underline font-mono">github.com/DevBoring/taiwan-ast-exam-score-calculator</a>
+            to source and description: <a href="https://github.com/DevBoring/taiwan-ast-exam-score-calculator" target="_blank" class="text-blue-500 hover:underline font-mono">github.com/DevBoring/taiwan-ast-exam-score-calculator</a>
         </div>
     </div>
 
@@ -106,7 +106,7 @@
         function doSearch() {
             const rawInput = document.getElementById('search-input').value.trim();
             const tbody = document.getElementById('result-tbody');
-            tbody.innerHTML = ''; // 空舊有的表格內容
+            tbody.innerHTML = ''; // 清空舊有的表格內容
 
             if (!rawInput) {
                 tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-red-500 bg-gray-50">請輸入關鍵字再進行查詢！</td></tr>';
@@ -115,7 +115,7 @@
 
             const keywords = rawInput.split(/[\s,，]+/).map(k => k.trim().toLowerCase()).filter(k => k !== "");
 
-            // 抓取使用者填寫的學測已知考科分數
+            // 抓取使用者填寫的已知考科分數
             const userScores = {
                 "國": parseFloat(document.getElementById('score-國').value) || 0,
                 "英": parseFloat(document.getElementById('score-英').value) || 0,
