@@ -1,6 +1,6 @@
 # 分科成績計算機 Advanced Subjects Test (AST) exam score calculator
 
-To calculator: https://devboring.github.io/taiwan-ast-exam-score-calculator/
+To the calculator: https://devboring.github.io/taiwan-ast-exam-score-calculator/
 
 嗨～　我是一名剛從師大附中畢業，正在準備分科學生。某天我去查了大考中心的　"OOO學年度大學分發入學 各系組最低錄取標準及錄取人數一覽表"　來大概計算剩餘科目所需的平均分數。
 
