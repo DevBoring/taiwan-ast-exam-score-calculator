@@ -9,7 +9,7 @@ To the calculator: https://devboring.github.io/taiwan-ast-exam-score-calculator/
 因為考慮的校系不少，因此一直重複計算非常麻煩，想想自己也會寫python為何不寫個程式輔助我計算，做著做著就想搞一個使用者導向的網頁版。
 但因為html忘的差不多了，程式問題百出，感謝Google Gemini幫助除錯與優化。(但也因此讓一大段程式長的跟AI寫的一樣，讓我很不爽)
 
-僅收錄民國111年(實行分科測驗)及以後的資料。只包含普通生最低錄取分數，原住民、退伍軍人、僑生、蒙藏生、派外子女等並不適用。
+僅收錄民國111年 (實行分科測驗) 及以後的資料。只包含普通生最低錄取分數，原住民、退伍軍人、僑生、蒙藏生、派外子女等並不適用。
 
 歡迎回報任何bug
 
@@ -25,7 +25,7 @@ To the calculator: https://devboring.github.io/taiwan-ast-exam-score-calculator/
 
 `index.html`：讀取`data.json`並建構整個網頁
 
-# 資料來源：大考中心
+# 資料來源：大考中心 (裡面有校系與對應的代碼)
 
 111年: https://www2.uac.edu.tw/111data/111_result_school_data.pdf
 
