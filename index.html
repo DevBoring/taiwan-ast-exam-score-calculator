@@ -127,7 +127,9 @@
             };
             let matchCount = 0;
 
-            for (const [code, deptInfo] of Object.entries(database)) {
+            const sortedDepts = Object.entries(database).sort((a, b) => parseInt(a[0], 10) - parseInt(b[0], 10));
+
+            for (const [code, deptInfo] of sortedDepts) {
                 const deptName = deptInfo.name.toLowerCase();
                 
                 const isMatch = keywords.some(keyword => code === keyword || deptName.includes(keyword));
