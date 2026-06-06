@@ -1,4 +1,4 @@
-# 分科成績計算機
+# 分科成績計算機 Advanced Subjects Test (AST) exam score calculator
 
 To calculator: https://devboring.github.io/taiwan-ast-exam-score-calculator/
 
