@@ -17,7 +17,7 @@ To the calculator: https://devboring.github.io/taiwan-ast-exam-score-calculator/
 
 `README.md`：就是這篇，應該不用解釋
 
-`source.txt`：為直接從大考中心`.pdf`中`ctrl+a`複製後直接貼上(包含一些垃圾文字)
+`source.txt`：為直接從大考中心`.pdf`中`ctrl + a`複製後直接貼上(包含一些垃圾文字)
 
 `convert.py`：讀取`source.txt`並分類與過濾，最後後輸出`data.json`
 
