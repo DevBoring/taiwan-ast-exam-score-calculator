@@ -13,7 +13,19 @@ To the calculator: https://devboring.github.io/taiwan-ast-exam-score-calculator/
 
 歡迎回報任何bug
 
-# 大考中心資料來源
+# 各檔案意義
+
+`README.md`：就是這篇，應該不用解釋
+
+`source.txt`：為直接從大考中心`.pdf`中`ctrl+a`複製後直接貼上(包含一些垃圾文字)
+
+`convert.py`：讀取`source.txt`並分類與過濾，最後後輸出`data.json`
+
+`data.json`：就是database
+
+`index.html`：讀取`data.json`與建構整個網頁
+
+# 資料來源：大考中心
 
 111年: https://www2.uac.edu.tw/111data/111_result_school_data.pdf
 
