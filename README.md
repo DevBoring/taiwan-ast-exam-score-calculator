@@ -9,6 +9,8 @@ To the calculator: https://devboring.github.io/taiwan-ast-exam-score-calculator/
 
 僅收錄民國111年(實行分科測驗)及以後的資料，只包含普通生最低錄取分數，原住民、退伍軍人、僑生、蒙藏生、派外子女等並不適用。
 
+歡迎回報任何bug
+
 # 大考中心資料來源
 
 111年: https://www2.uac.edu.tw/111data/111_result_school_data.pdf
@@ -18,3 +20,7 @@ To the calculator: https://devboring.github.io/taiwan-ast-exam-score-calculator/
 113年: https://www2.uac.edu.tw/113data/113_result_school_data.pdf
 
 114年: https://www.uac.edu.tw/114data/114_result_school_data.pdf
+
+# 已知bug
+
+暫無
