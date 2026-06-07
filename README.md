@@ -35,6 +35,6 @@ To the calculator: https://devboring.github.io/taiwan-ast-exam-score-calculator/
 
 114年: https://www.uac.edu.tw/114data/114_result_school_data.pdf
 
-# 已知bug
+# 已知bug或建議
 
-暫無
+加入選學校或或選科目系統
