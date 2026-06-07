@@ -3,51 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>分科測驗分數計算器</title>
+    <title>分科測驗目標分數計算機</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body class="bg-gray-100 min-h-screen py-8 px-4 font-sans text-gray-800">
 
     <div class="max-w-5xl mx-auto bg-white rounded-xl shadow-lg p-6">
-        <h1 class="text-3xl font-bold text-center text-blue-900 mb-6">🎯 分科測驗目標分數落點計算器</h1>
+        <h1 class="text-3xl font-bold text-center text-blue-900 mb-6">🎯 分科測驗目標分數計算機</h1>
         
         <div class="bg-blue-50 p-4 rounded-lg mb-6">
             <h2 class="text-lg font-semibold text-blue-800 mb-3">📋 輸入你已知的考科分數（0~60級分，若留空為不計算）</h2>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700">國文 (學測)</label>
-                    <input type="number" id="score-國" min="1" max="60" placeholder="可留空" class="mt-1 block w-full p-2 border border-gray-300 rounded bg-white">
+                    <input type="number" id="score-國" min="0" max="60" placeholder="可留空" class="mt-1 block w-full p-2 border border-gray-300 rounded bg-white score-input">
+                    <p id="tip-score-國" class="text-xs text-red-600 mt-1 hidden font-semibold">分數超出 0~60 範圍已自動修正</p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">英文 (學測)</label>
-                    <input type="number" id="score-英" min="1" max="60" placeholder="可留空" class="mt-1 block w-full p-2 border border-gray-300 rounded bg-white">
+                    <input type="number" id="score-英" min="0" max="60" placeholder="可留空" class="mt-1 block w-full p-2 border border-gray-300 rounded bg-white score-input">
+                    <p id="tip-score-英" class="text-xs text-red-600 mt-1 hidden font-semibold">分數超出 0~60 範圍已自動修正</p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">數A (學測)</label>
-                    <input type="number" id="score-數A" min="1" max="60" placeholder="可留空" class="mt-1 block w-full p-2 border border-gray-300 rounded bg-white">
+                    <input type="number" id="score-數A" min="0" max="60" placeholder="可留空" class="mt-1 block w-full p-2 border border-gray-300 rounded bg-white score-input">
+                    <p id="tip-score-數A" class="text-xs text-red-600 mt-1 hidden font-semibold">分數超出 0~60 範圍已自動修正</p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">數B (學測)</label>
-                    <input type="number" id="score-數B" min="1" max="60" placeholder="可留空" class="mt-1 block w-full p-2 border border-gray-300 rounded bg-white">
+                    <input type="number" id="score-數B" min="0" max="60" placeholder="可留空" class="mt-1 block w-full p-2 border border-gray-300 rounded bg-white score-input">
+                    <p id="tip-score-數B" class="text-xs text-red-600 mt-1 hidden font-semibold">分數超出 0~60 範圍已自動修正</p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">社會 (學測)</label>
-                    <input type="number" id="score-社" min="1" max="60" placeholder="可留空" class="mt-1 block w-full p-2 border border-gray-300 rounded bg-white">
+                    <input type="number" id="score-社" min="0" max="60" placeholder="可留空" class="mt-1 block w-full p-2 border border-gray-300 rounded bg-white score-input">
+                    <p id="tip-score-社" class="text-xs text-red-600 mt-1 hidden font-semibold">分數超出 0~60 範圍已自動修正</p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">自然 (學測)</label>
-                    <input type="number" id="score-自" min="1" max="60" placeholder="可留空" class="mt-1 block w-full p-2 border border-gray-300 rounded bg-white">
+                    <input type="number" id="score-自" min="0" max="60" placeholder="可留空" class="mt-1 block w-full p-2 border border-gray-300 rounded bg-white score-input">
+                    <p id="tip-score-自" class="text-xs text-red-600 mt-1 hidden font-semibold">分數超出 0~60 範圍已自動修正</p>
                 </div>
             </div>
             <p class="text-xs text-gray-500 mt-2">※ 註：分科測驗科目（數甲、數乙、物、化、生、歷、地、公）因目前未知分數，系統會自動在下方為你計算出它們「平均需要考幾級分」。</p>
         </div>
 
+        <div class="bg-gray-50 border border-gray-200 p-4 rounded-lg mb-6">
+            <h2 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-1">⚙️ 進階搜尋、篩選（未勾選代表不限制）</h2>
+            
+            <div class="mb-4">
+                <span class="block text-xs font-semibold text-gray-600 mb-1">🏫 限定目標學校：</span>
+                <div id="school-filter-container" class="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-2 bg-white border border-gray-200 rounded text-xs">
+                    <span class="text-gray-400">載入資料中...</span>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <span class="block text-xs font-semibold text-green-700 mb-1">📚「必須採計」的科目（可複選，只顯示該年有採計選擇科目的校系）：</span>
+                <div id="subject-filter-container" class="flex flex-wrap gap-3 p-2 bg-white border border-gray-200 rounded text-xs">
+                    <span class="text-gray-400">載入資料中...</span>
+                </div>
+            </div>
+
+            <div>
+                <span class="block text-xs font-semibold text-red-700 mb-1">❌「絕對不採計」的科目（可複選，不顯示該年有採計選擇科目的校系）：</span>
+                <div id="exclude-subject-container" class="flex flex-wrap gap-3 p-2 bg-white border border-gray-200 rounded text-xs">
+                    <span class="text-gray-400">載入資料中...</span>
+                </div>
+            </div>
+        </div>
+
         <div class="mb-6 flex flex-col sm:flex-row gap-4 items-end">
             <div class="flex-1 w-full">
-                <label class="block text-sm font-medium text-gray-700 mb-1">🔍 輸入校系代碼或關鍵字（支援多個查詢，例如：0013, 0014。也可直接搜尋名字，例如：臺灣大學）</label>
-                <input type="text" id="search-input" placeholder="請輸入代碼或校系名稱..." class="w-full p-3 border border-gray-300 rounded shadow-sm bg-white text-lg">
+                <label class="block text-sm font-medium text-gray-700 mb-1">🔍 輸入校系代碼或關鍵字（支援多個查詢，如：0013, 0014, 臺灣大學。留空則顯示全部）</label>
+                <input type="text" id="search-input" placeholder="請輸入代碼或校系名稱，或留空直接點擊查詢..." class="w-full p-3 border border-gray-300 rounded shadow-sm bg-white text-lg">
             </div>
-            <button id="search-btn" class="w-full sm:w-auto bg-blue-900 hover:bg-blue-800 text-white font-semibold px-6 py-3 rounded shadow transition">
+            <button id="search-btn" class="w-full sm:w-auto bg-blue-900 hover:bg-blue-800 text-white font-semibold px-6 py-3 rounded shadow transition whitespace-nowrap">
                 開始查詢
             </button>
         </div>
@@ -67,7 +98,7 @@
                 </thead>
                 <tbody id="result-tbody" class="text-center text-sm divide-y divide-gray-200">
                     <tr>
-                        <td colspan="7" class="p-8 text-gray-400 bg-gray-50">請在上方輸入關鍵字並點擊查詢</td>
+                        <td colspan="7" class="p-8 text-gray-400 bg-gray-50">請選擇篩選條件或輸入關鍵字並點擊查詢</td>
                     </tr>
                 </tbody>
             </table>
@@ -80,6 +111,37 @@
 
     <script>
         let database = {};
+        const SUBJECT_ORDER = ["國", "英", "數A", "數B", "社", "自", "數甲", "數乙", "歷", "地", "公", "物", "化", "生", "術科"];
+        const timers = {};
+
+        document.querySelectorAll('.score-input').forEach(input => {
+            input.addEventListener('input', function() {
+                let val = this.value.trim();
+                if (val === "" || isNaN(val)) return;
+                
+                let score = parseFloat(val);
+                let corrected = false;
+                
+                if (score < 0) {
+                    this.value = 0;
+                    corrected = true;
+                } else if (score > 60) {
+                    this.value = 60;
+                    corrected = true;
+                }
+                
+                if (corrected) {
+                    const tipEl = document.getElementById('tip-' + this.id);
+                    if (tipEl) {
+                        tipEl.classList.remove('hidden');
+                        if (timers[this.id]) clearTimeout(timers[this.id]);
+                        timers[this.id] = setTimeout(() => {
+                            tipEl.classList.add('hidden');
+                        }, 2000);
+                    }
+                }
+            });
+        });
 
         fetch('data.json?v=' + new Date().getTime())
             .then(res => {
@@ -88,7 +150,7 @@
             })
             .then(data => {
                 database = data;
-                console.log("資料庫成功載入！校系總數：", Object.keys(database).length);
+                initFilters();
             })
             .catch(err => {
                 console.error(err);
@@ -100,21 +162,89 @@
             if (e.key === 'Enter') doSearch();
         });
 
+        function initFilters() {
+            const schoolMap = new Map(); 
+            const subjects = new Set();
+
+            for (const [code, deptInfo] of Object.entries(database)) {
+                const schoolName = deptInfo.name.split(/[\s分]+/)[0]; 
+                if (schoolName) {
+                    const codeInt = parseInt(code, 10);
+                    if (!schoolMap.has(schoolName) || codeInt < schoolMap.get(schoolName)) {
+                        schoolMap.set(schoolName, codeInt);
+                    }
+                }
+
+                for (const year in deptInfo.history) {
+                    if (deptInfo.history[year].weights) {
+                        Object.keys(deptInfo.history[year].weights).forEach(sub => {
+                            if (sub === "術" || sub === "術科") {
+                                subjects.add("術科");
+                            } else {
+                                subjects.add(sub);
+                            }
+                        });
+                    }
+                }
+            }
+
+            const sortedSchools = Array.from(schoolMap.keys()).sort((a, b) => schoolMap.get(a) - schoolMap.get(b));
+            const schoolContainer = document.getElementById('school-filter-container');
+            schoolContainer.innerHTML = '';
+            sortedSchools.forEach(school => {
+                const label = document.createElement('label');
+                label.className = 'inline-flex items-center gap-1 bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded cursor-pointer select-none';
+                label.innerHTML = `<input type="checkbox" name="filter-school" value="${school}" class="rounded text-blue-600"> ${school}`;
+                schoolContainer.appendChild(label);
+            });
+
+            const sortedSubjects = Array.from(subjects).sort((a, b) => {
+                let idxA = SUBJECT_ORDER.indexOf(a);
+                let idxB = SUBJECT_ORDER.indexOf(b);
+                if (idxA === -1) idxA = 99;
+                if (idxB === -1) idxB = 99;
+                return idxA - idxB;
+            });
+
+            const subjectContainer = document.getElementById('subject-filter-container');
+            subjectContainer.innerHTML = '';
+            sortedSubjects.forEach(sub => {
+                const label = document.createElement('label');
+                label.className = 'inline-flex items-center gap-1 bg-green-50 hover:bg-green-100 border border-green-200 text-green-900 px-2 py-1 rounded cursor-pointer select-none';
+                label.innerHTML = `<input type="checkbox" name="filter-subject" value="${sub}" class="rounded text-green-600"> ${sub}`;
+                subjectContainer.appendChild(label);
+            });
+
+            const excludeContainer = document.getElementById('exclude-subject-container');
+            excludeContainer.innerHTML = '';
+            sortedSubjects.forEach(sub => {
+                const label = document.createElement('label');
+                label.className = 'inline-flex items-center gap-1 bg-red-50 hover:bg-red-100 border border-red-200 text-red-900 px-2 py-1 rounded cursor-pointer select-none';
+                label.innerHTML = `<input type="checkbox" name="filter-exclude" value="${sub}" class="rounded text-red-600"> ${sub}`;
+                excludeContainer.appendChild(label);
+            });
+        }
+
         function doSearch() {
             const rawInput = document.getElementById('search-input').value.trim();
             const tbody = document.getElementById('result-tbody');
             tbody.innerHTML = ''; 
-            if (!rawInput) {
-                tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-red-500 bg-gray-50">請輸入關鍵字再進行查詢！</td></tr>';
-                return;
-            }
+
+            const checkedSchools = Array.from(document.querySelectorAll('input[name="filter-school"]:checked')).map(el => el.value);
+            const checkedSubjects = Array.from(document.querySelectorAll('input[name="filter-subject"]:checked')).map(el => el.value);
+            const excludedSubjects = Array.from(document.querySelectorAll('input[name="filter-exclude"]:checked')).map(el => el.value);
 
             const keywords = rawInput.split(/[\s,，]+/).map(k => k.trim().toLowerCase()).filter(k => k !== "");
 
             function getScore(id) {
-                const val = document.getElementById(id).value.trim();
+                const inputEl = document.getElementById(id);
+                let val = inputEl.value.trim();
                 if (val === "" || isNaN(val)) return null;
-                return parseFloat(val);
+                
+                let score = parseFloat(val);
+                if (score < 0) score = 0;
+                if (score > 60) score = 60;
+                return score;
             }
 
             const userScores = {
@@ -125,25 +255,36 @@
                 "社":  getScore('score-社'),
                 "自":  getScore('score-自'),
             };
+            
             let matchCount = 0;
-
             const sortedDepts = Object.entries(database).sort((a, b) => parseInt(a[0], 10) - parseInt(b[0], 10));
 
             for (const [code, deptInfo] of sortedDepts) {
                 const deptName = deptInfo.name.toLowerCase();
                 
-                const isMatch = keywords.some(keyword => code === keyword || deptName.includes(keyword));
-                
-                if (isMatch) {
-                    matchCount++;
-                    
-                    const sortedYears = Object.keys(deptInfo.history).sort((a, b) => b.localeCompare(a));
+                let isKeywordMatch = keywords.length === 0 ? true : keywords.some(keyword => code === keyword || deptName.includes(keyword));
+                let isSchoolMatch = checkedSchools.length === 0 ? true : checkedSchools.some(school => deptName.includes(school.toLowerCase()));
 
-                    sortedYears.forEach((year, index) => {
+                if (isKeywordMatch && isSchoolMatch) {
+                    const sortedYears = Object.keys(deptInfo.history).sort((a, b) => b.localeCompare(a));
+                    let deptHasValidYear = false;
+                    const rowsToAppend = [];
+
+                    sortedYears.forEach((year) => {
                         const info = deptInfo.history[year];
                         
-                        let knownSubjectScore = 0;   
-                        let unknownWeightsSum = 0;  
+                        const currentWeightsSubjects = Object.keys(info.weights).map(sub => (sub === "術" || sub === "術科") ? "術科" : sub);
+                        
+                        let isSubjectMatch = checkedSubjects.length === 0 ? true : checkedSubjects.every(sub => currentWeightsSubjects.includes(sub));
+                        
+                        let isExcludedMatch = excludedSubjects.length === 0 ? true : !excludedSubjects.some(sub => currentWeightsSubjects.includes(sub));
+
+                        if (!isSubjectMatch || !isExcludedMatch) return; 
+
+                        deptHasValidYear = true;
+
+                        let knownSubjectScore = 0;  
+                        let unknownWeightsSum = 0;   
 
                         for (const [subject, weight] of Object.entries(info.weights)) {
                             if (userScores.hasOwnProperty(subject) && userScores[subject] !== null) {
@@ -161,34 +302,51 @@
                             singleSubjectAverage = scoreAfterDeduction / unknownWeightsSum;
                         }
 
-                        const tr = document.createElement('tr');
-                        tr.className = index % 2 === 0 ? 'bg-white hover:bg-gray-50' : 'bg-gray-50 hover:bg-gray-100';
-
-                        if (index === 0) {
-                            const tdName = document.createElement('td');
-                            tdName.className = "p-3 border text-left font-semibold text-blue-900 bg-white";
-                            tdName.rowSpan = sortedYears.length;
-                            tdName.innerHTML = `${deptInfo.name} <br><span class="text-xs text-gray-400 font-mono">#${code}</span>`;
-                            tr.appendChild(tdName);
-                        }
-
-                        tr.innerHTML += `
-                            <td class="p-3 border">${year}年</td>
-                            <td class="p-3 border font-mono text-gray-600">${info.min_score.toFixed(2)}</td>
-                            <td class="p-3 border text-left text-xs font-mono text-gray-600 max-w-xs truncate" title="${info.full_formula}">${info.full_formula}</td>
-                            <td class="p-3 border font-mono ${scoreAfterDeduction > 0 ? 'text-blue-700' : 'text-green-600 font-bold'}">${scoreAfterDeduction.toFixed(2)}</td>
-                            <td class="p-3 border font-bold text-orange-700 bg-orange-50 font-mono">
-                                ${singleSubjectAverage > 60 ? '⚠️ 超出滿分' : singleSubjectAverage.toFixed(2) + ' 級'}
-                            </td>
-                            <td class="p-3 border text-left text-xs text-gray-500 max-w-xs truncate" title="${info.filter}">${info.filter}</td>
-                        `;
-                        tbody.appendChild(tr);
+                        rowsToAppend.push({
+                            year,
+                            info,
+                            scoreAfterDeduction,
+                            singleSubjectAverage
+                        });
                     });
+
+                    if (deptHasValidYear && rowsToAppend.length > 0) {
+                        matchCount++;
+
+                        rowsToAppend.forEach((rowData, index) => {
+                            const tr = document.createElement('tr');
+                            tr.className = index % 2 === 0 ? 'bg-white hover:bg-gray-50' : 'bg-gray-50 hover:bg-gray-100';
+
+                            if (index === 0) {
+                                const tdName = document.createElement('td');
+                                tdName.className = "p-3 border text-left font-semibold text-blue-900 bg-white";
+                                tdName.rowSpan = rowsToAppend.length;
+                                tdName.innerHTML = `${deptInfo.name} <br><span class="text-xs text-gray-400 font-mono">#${code}</span>`;
+                                tr.appendChild(tdName);
+                            }
+
+                            const averageDisplay = rowData.singleSubjectAverage > 60 
+                                ? `<span class="text-red-600 font-bold">⚠️ 超出滿分 (${rowData.singleSubjectAverage.toFixed(2)} 級)</span>`
+                                : rowData.singleSubjectAverage.toFixed(2) + ' 級';
+
+                            tr.innerHTML += `
+                                <td class="p-3 border">${rowData.year}年</td>
+                                <td class="p-3 border font-mono text-gray-600">${rowData.info.min_score.toFixed(2)}</td>
+                                <td class="p-3 border text-left text-xs font-mono text-gray-600 max-w-xs truncate" title="${rowData.info.full_formula}">${rowData.info.full_formula}</td>
+                                <td class="p-3 border font-mono ${rowData.scoreAfterDeduction > 0 ? 'text-blue-700' : 'text-green-600 font-bold'}">${rowData.scoreAfterDeduction.toFixed(2)}</td>
+                                <td class="p-3 border font-bold text-orange-700 bg-orange-50 font-mono">
+                                    ${averageDisplay}
+                                </td>
+                                <td class="p-3 border text-left text-xs text-gray-500 max-w-xs truncate" title="${rowData.info.filter}">${rowData.info.filter}</td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    }
                 }
             }
 
             if (matchCount === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-gray-400 bg-gray-50">找不到符合的校系，請換個關鍵字試試看！</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-gray-400 bg-gray-50">找不到符合篩選條件的校系，請調整關鍵字或勾選項目！</td></tr>';
             }
         }
     </script>
