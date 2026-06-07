@@ -37,4 +37,4 @@ To the calculator: https://devboring.github.io/taiwan-ast-exam-score-calculator/
 
 # 已知bug或建議
 
-加入選學校或或選科目系統
+~~加入選學校或或選科目系統~~ (2026/06/08)
